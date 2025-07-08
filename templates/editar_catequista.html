@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block titulo %}Editar Catequista{% endblock %}
+{% block contenido %}
+<h2>Editar Catequista</h2>
+
+<form method="POST" class="row g-3">
+    <div class="col-md-6">
+        <label for="nombre" class="form-label">Nombre</label>
+        <input type="text" name="nombre" value="{{ catequista.nombre }}" class="form-control" required>
+    </div>
+    <div class="col-md-6">
+        <label for="apellido" class="form-label">Apellido</label>
+        <input type="text" name="apellido" value="{{ catequista.apellido }}" class="form-control" required>
+    </div>
+    <div class="col-md-6">
+        <label for="nivel" class="form-label">Nivel</label>
+        <select name="nivel" class="form-control rounded-pill" required>
+            <option value="Básico" {% if catequista.nivel == 'Básico' %}selected{% endif %}>Básico</option>
+            <option value="Intermedio" {% if catequista.nivel == 'Intermedio' %}selected{% endif %}>Intermedio</option>
+            <option value="Avanzado" {% if catequista.nivel == 'Avanzado' %}selected{% endif %}>Avanzado</option>
+            <option value="Experto" {% if catequista.nivel == 'Experto' %}selected{% endif %}>Experto</option>
+        </select>
+
+    </div>
+    <div class="col-md-6">
+        <label for="idUser" class="form-label">ID Usuario</label>
+        <input type="text" name="idUser" value="{{ catequista.IDUser }}" class="form-control" required>
+    </div>
+    <div class="col-12 mt-3">
+        <button type="submit" class="btn btn-primary rounded-pill">Guardar Cambios</button>
+        <a href="/catequistas" class="btn btn-secondary rounded-pill">Cancelar</a>
+    </div>
+</form>
+{% endblock %}

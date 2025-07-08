@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block titulo %}Grupos{% endblock %}
+{% block contenido %}
+<h2 class="mb-4">Listado de Grupos</h2>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Nombre del Grupo</th>
+            <th>Nivel</th>
+            <th>Horario</th>
+            <th>ID Catequista</th>
+            <th>Estado</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for g in grupos %}
+        <tr>
+            <td>{{ g.nombre }}</td>
+            <td>{{ g.nivel }}</td>
+            <td>{{ g.horario }}</td>
+            <td>{{ g.catequista_id }}</td>
+            <td>{{ g.estado }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

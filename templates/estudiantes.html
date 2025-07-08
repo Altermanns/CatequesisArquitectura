@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% block titulo %}Estudiantes{% endblock %}
+{% block contenido %}
+
+<h2 class="mb-4">Agregar Estudiante</h2>
+
+<form method="POST" action="/estudiantes/agregar" class="row g-3 mb-5">
+    <div class="col-md-4">
+        <input type="text" name="idEstudiante" class="form-control" placeholder="ID del Estudiante" required>
+    </div>
+    <div class="col-md-4">
+        <input type="text" name="nombre" class="form-control" placeholder="Nombre" required>
+    </div>
+    <div class="col-md-4">
+        <input type="text" name="apellido" class="form-control" placeholder="Apellido" required>
+    </div>
+    <div class="col-md-4">
+        <input type="number" name="edad" class="form-control" placeholder="Edad" required>
+    </div>
+    <div class="col-md-4">
+        <input type="text" name="grupoId" class="form-control" placeholder="ID del Grupo">
+    </div>
+
+    <div class="col-12 mt-3">
+        <label><strong>Sacramentos que le hacen falta:</strong></label><br>
+        {% for s in sacramentos %}
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" name="sacramentos" value="{{ s._id }}" id="{{ s._id }}">
+                <label class="form-check-label" for="{{ s._id }}">{{ s.nombre }}</label>
+            </div>
+        {% endfor %}
+    </div>
+
+    <div class="col-12 mt-4">
+        <h5>Información del Padre/Madre/Tutor</h5>
+    </div>
+    <div class="col-md-4">
+        <input type="text" name="nombrePadre" class="form-control" placeholder="Nombre del representante" required>
+    </div>
+    <div class="col-md-4">
+        <input type="text" name="telefonoPadre" class="form-control" placeholder="Teléfono" required>
+    </div>
+    <div class="col-md-4">
+        <input type="email" name="emailPadre" class="form-control" placeholder="Correo electrónico" required>
+    </div>
+
+    <div class="col-12 mt-3">
+        <button type="submit" class="btn btn-success rounded-pill">Guardar Estudiante</button>
+    </div>
+</form>
+
+<hr>
+
+<h2 class="mb-4">Listado de Estudiantes</h2>
+
+<form method="GET" action="/estudiantes/buscar" class="input-group mb-4">
+    <input type="text" name="termino" class="form-control" placeholder="Buscar estudiante por nombre">
+    <button class="btn btn-outline-dark rounded-end-pill">Buscar</button>
+</form>
+
+<table class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>Edad</th>
+            <th>Grupo</th>
+            <th>Sacramentos</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for e in estudiantes %}
+            <tr>
+                <td>{{ e.nombre }}</td>
+                <td>{{ e.apellido }}</td>
+                <td>{{ e.edad }}</td>
+                <td>{{ e.grupo_id or 'Sin grupo' }}</td>
+                <td>
+                    {% for s in e.sacramentos %}
+                        <span class="badge text-bg-secondary">{{ s }}</span>
+                    {% endfor %}
+                </td>
+                <td>{{ e.estado }}</td>
+                <td>
+                    <a href="/estudiantes/editar/{{ e._id }}" class="btn btn-sm btn-warning rounded-pill">Editar</a>
+                    <a href="/estudiantes/eliminar/{{ e._id }}" class="btn btn-sm btn-danger rounded-pill" onclick="return confirm('¿Estás seguro de eliminar este estudiante?')">Eliminar</a>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

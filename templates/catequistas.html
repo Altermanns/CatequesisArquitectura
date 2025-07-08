@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block titulo %}Catequistas{% endblock %}
+{% block contenido %}
+<h2 class="mb-4">Listado de Catequistas</h2>
+
+<form method="POST" action="/catequistas/agregar" class="row g-3 mb-5">
+    <div class="col-md-6">
+        <input type="text" name="nombre" placeholder="Nombre" class="form-control" required>
+    </div>
+    <div class="col-md-6">
+        <input type="text" name="apellido" placeholder="Apellido" class="form-control" required>
+    </div>
+    <div class="col-md-6">
+        <select name="nivel" class="form-control rounded-pill" required>
+            <option value="">Seleccione nivel</option>
+            <option value="Básico">Básico</option>
+            <option value="Intermedio">Intermedio</option>
+            <option value="Avanzado">Avanzado</option>
+            <option value="Experto">Experto</option>
+        </select>
+
+    </div>
+    <div class="col-md-6">
+        <input type="text" name="idUser" placeholder="ID Usuario" class="form-control" required>
+    </div>
+    <div class="col-12">
+        <button class="btn btn-dark rounded-pill" type="submit">Agregar Catequista</button>
+    </div>
+</form>
+
+<form method="GET" action="/catequistas/buscar" class="input-group mb-4">
+    <input type="text" name="termino" class="form-control" placeholder="Buscar por nombre">
+    <button class="btn btn-outline-dark rounded-end-pill">Buscar</button>
+</form>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>Nivel</th>
+            <th>ID Usuario</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for c in catequistas %}
+        <tr>
+            <td>{{ c.nombre }}</td>
+            <td>{{ c.apellido }}</td>
+            <td>{{ c.nivel }}</td>
+            <td>{{ c.IDUser }}</td>
+            <td>
+                <a href="/catequistas/editar/{{ c._id }}" class="btn btn-warning btn-sm rounded-pill">Editar</a>
+                <a href="/catequistas/eliminar/{{ c._id }}" class="btn btn-danger btn-sm rounded-pill">Eliminar</a>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

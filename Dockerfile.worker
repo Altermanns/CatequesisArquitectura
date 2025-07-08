@@ -1,0 +1,9 @@
+FROM python:3.11
+
+WORKDIR /app
+COPY worker.py ./
+COPY .env ./
+
+RUN pip install pika python-dotenv
+
+CMD ["python", "worker.py"]

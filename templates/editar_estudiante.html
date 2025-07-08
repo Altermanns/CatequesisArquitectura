@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block titulo %}Editar Estudiante{% endblock %}
+{% block contenido %}
+
+<h2>Editar Estudiante</h2>
+
+<form method="POST" class="row g-3">
+    <div class="col-md-4">
+        <label class="form-label">Nombre</label>
+        <input type="text" name="nombre" class="form-control" value="{{ estudiante.nombre }}" required>
+    </div>
+    <div class="col-md-4">
+        <label class="form-label">Apellido</label>
+        <input type="text" name="apellido" class="form-control" value="{{ estudiante.apellido }}" required>
+    </div>
+    <div class="col-md-4">
+        <label class="form-label">Edad</label>
+        <input type="number" name="edad" class="form-control" value="{{ estudiante.edad }}" required>
+    </div>
+
+    <div class="col-md-6">
+        <label class="form-label">ID del Grupo</label>
+        <input type="text" name="grupoId" class="form-control" value="{{ estudiante.grupo_id }}">
+    </div>
+
+    <div class="col-12 mt-3">
+        <label><strong>Sacramentos que le hacen falta:</strong></label><br>
+        {% for s in sacramentos %}
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" name="sacramentos" value="{{ s._id }}"
+                    {% if s._id in estudiante.sacramentos %}checked{% endif %}>
+                <label class="form-check-label" for="{{ s._id }}">{{ s.nombre }}</label>
+            </div>
+        {% endfor %}
+    </div>
+
+    <div class="col-12 mt-4">
+        <h5>Información del Representante</h5>
+    </div>
+    <div class="col-md-4">
+        <label class="form-label">Nombre del Representante</label>
+        <input type="text" name="nombrePadre" class="form-control"
+               value="{{ estudiante.padres[0].nombre if estudiante.padres }}">
+    </div>
+    <div class="col-md-4">
+        <label class="form-label">Teléfono</label>
+        <input type="text" name="telefonoPadre" class="form-control"
+               value="{{ estudiante.padres[0].telefono if estudiante.padres }}">
+    </div>
+    <div class="col-md-4">
+        <label class="form-label">Correo electrónico</label>
+        <input type="email" name="emailPadre" class="form-control"
+               value="{{ estudiante.padres[0].email if estudiante.padres }}">
+    </div>
+
+    <div class="col-12 mt-4">
+        <button type="submit" class="btn btn-primary rounded-pill">Guardar Cambios</button>
+        <a href="/estudiantes" class="btn btn-secondary rounded-pill">Cancelar</a>
+    </div>
+</form>
+
+{% endblock %}

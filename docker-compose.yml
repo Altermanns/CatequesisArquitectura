@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    env_file:
+      - .env
+    depends_on:
+      - mongo
+      - rabbitmq
+    networks:
+      - catequesis_net
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile.worker
+    env_file:
+      - .env
+    depends_on:
+      - rabbitmq
+    networks:
+      - catequesis_net
+
+  mongo:
+    image: mongo
+    ports:
+      - "27017:27017"
+    networks:
+      - catequesis_net
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5673:5672"     # RabbitMQ AMQP
+      - "15673:15672"   # RabbitMQ UI
+    networks:
+      - catequesis_net
+
+networks:
+  catequesis_net:
+    driver: bridge

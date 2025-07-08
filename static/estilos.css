@@ -1,0 +1,62 @@
+body {
+    background-color: #f8f9fa;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #212529;
+}
+
+h1, h2, h4 {
+    color: #0d6efd;
+}
+
+.table th {
+    background-color: #e9ecef;
+    color: #495057;
+}
+
+.btn {
+    transition: all 0.3s ease-in-out;
+    font-weight: 500;
+}
+
+.btn:hover {
+    transform: scale(1.03);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.navbar {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.container {
+    max-width: 960px;
+}
+
+/* Inputs y formularios */
+input.form-control, select.form-control, textarea.form-control {
+    border-radius: 12px;
+}
+
+/* Redondear tablas */
+.table {
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+/* Bordes redondeados para formularios */
+form .form-control {
+    border-radius: 1rem;
+}
+
+input::placeholder {
+    color: #adb5bd;
+}
+
+/* Footer opcional */
+footer {
+    margin-top: 40px;
+    padding: 20px;
+    text-align: center;
+    color: #999;
+    font-size: 0.9rem;
+}
+
