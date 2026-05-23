@@ -1,13 +1,27 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session, flash
+from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from pymongo import MongoClient
-import pika
 import json
 import os
 from dotenv import load_dotenv
+from security import keycloak_manager, User
 
 load_dotenv()
 
 app = Flask(__name__)
+app.secret_key = os.getenv('SECRET_KEY', 'una_llave_secreta_para_flask')
+
+# Configuración Flask-Login
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
+
+@login_manager.user_loader
+def load_user(user_id):
+    user_data = session.get('user')
+    if user_data:
+        return User(user_data['id'], user_data['name'], user_data['email'], user_data['roles'])
+    return None
 
 # Conexión a MongoDB (usando variable de entorno para flexibilidad)
 mongo_uri = os.getenv('MONGO_URI', 'mongodb://mongo:27017/Catequesis')
@@ -17,6 +31,50 @@ catequistas = db['Catequista']
 estudiantes = db['Estudiante']
 grupos = db['Grupos']
 sacramentos = db['Sacramentos']
+
+@app.route('/login')
+def login():
+    redirect_uri = url_for('callback', _external=True)
+    return redirect(keycloak_manager.get_login_url(redirect_uri))
+
+@app.route('/callback')
+def callback():
+    code = request.args.get('code')
+    if not code:
+        return "Error: No code provided", 400
+    
+    redirect_uri = url_for('callback', _external=True)
+    
+    try:
+        # Intercambiar código por token
+        token = keycloak_manager.get_token(code, redirect_uri)
+        # Obtener info del usuario
+        user_info = keycloak_manager.get_user_info(token['access_token'])
+        
+        # Crear objeto de usuario
+        user_obj = {
+            'id': user_info['sub'],
+            'name': user_info.get('preferred_username', user_info.get('name')),
+            'email': user_info.get('email'),
+            'roles': user_info.get('realm_access', {}).get('roles', [])
+        }
+        
+        # Guardar en sesión y loguear
+        session['user'] = user_obj
+        user = User(user_obj['id'], user_obj['name'], user_obj['email'], user_obj['roles'])
+        login_user(user)
+        
+        return redirect(url_for('index'))
+    except Exception as e:
+        return f"Error en la autenticación: {str(e)}", 500
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    session.pop('user', None)
+    redirect_uri = url_for('index', _external=True)
+    return redirect(keycloak_manager.get_logout_url(redirect_uri))
 
 @app.route('/')
 def index():
@@ -91,30 +149,6 @@ def agregar_estudiante():
         }]
     }
     estudiantes.insert_one(data)
-
-    # Enviar mensaje a RabbitMQ para correo de confirmación
-    try:
-        connection = pika.BlockingConnection(pika.ConnectionParameters(host=os.getenv('RABBITMQ_HOST', 'rabbitmq')))
-        channel = connection.channel()
-        channel.queue_declare(queue='email_queue', durable=True)
-
-        mensaje = {
-            "nombre": data["nombre"],
-            "apellido": data["apellido"],
-            "email_padre": data["padres"][0]["email"]
-        }
-
-        channel.basic_publish(
-            exchange='',
-            routing_key='email_queue',
-            body=json.dumps(mensaje),
-            properties=pika.BasicProperties(delivery_mode=2)  # mensaje persistente
-        )
-
-        connection.close()
-    except Exception as e:
-        print("❌ Error al enviar a RabbitMQ:", e)
-
     return redirect(url_for('listar_estudiantes'))
 
 @app.route('/estudiantes/editar/<id>', methods=['GET', 'POST'])
