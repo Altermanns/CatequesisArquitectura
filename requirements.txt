@@ -1,0 +1,7 @@
+flask
+pymongo
+dnspython
+pika
+python-dotenv
+python-keycloak
+flask-login

@@ -3,12 +3,27 @@
 {% block contenido %}
 
 <div class="text-center mt-5">
-    <h2 class="display-5 fw-bold" style="color: #5E421B;">¡Bienvenido al Sistema de Catequesis!</h2>
-    <img src="{{ url_for('static', filename='imagenes/inicio.png') }}" alt="Catequesis" class="img-fluid rounded mb-4" style="max-width: 300px;">
-    <div class="d-grid gap-3 col-md-6 mx-auto mt-4">
-        <a href="/catequistas" class="btn btn-warning btn-lg rounded-pill shadow">📘 Gestionar Catequistas</a>
-        <a href="/estudiantes" class="btn btn-success btn-lg rounded-pill shadow">👨‍🎓 Gestionar Estudiantes</a>
-        <a href="/grupos" class="btn btn-primary btn-lg rounded-pill shadow">🧩 Ver Grupos</a>
-    </div>
+    {% if current_user.is_authenticated %}
+        <h2 class="display-5 fw-bold" style="color: #5E421B;">¡Bienvenido de nuevo, {{ current_user.name }}!</h2>
+        <p class="lead">¿Qué deseas gestionar hoy?</p>
+        <img src="{{ url_for('static', filename='imagenes/inicio.png') }}" alt="Catequesis" class="img-fluid rounded mb-4" style="max-width: 300px;">
+        <div class="d-grid gap-3 col-md-6 mx-auto mt-4">
+            <a href="/catequistas" class="btn btn-warning btn-lg rounded-pill shadow">📘 Gestionar Catequistas</a>
+            <a href="/estudiantes" class="btn btn-success btn-lg rounded-pill shadow">👨‍🎓 Gestionar Estudiantes</a>
+            <a href="/grupos" class="btn btn-primary btn-lg rounded-pill shadow">🧩 Ver Grupos</a>
+        </div>
+    {% else %}
+        <div class="py-5 bg-light rounded shadow-sm">
+            <h2 class="display-4 fw-bold" style="color: #5E421B;">Sistema de Gestión de Catequesis</h2>
+            <p class="lead mb-4">Por favor, inicia sesión para acceder al panel de administración.</p>
+            <img src="{{ url_for('static', filename='imagenes/inicio.png') }}" alt="Catequesis" class="img-fluid rounded mb-5" style="max-width: 350px;">
+            <div class="d-grid gap-2 col-md-4 mx-auto">
+                <a href="{{ url_for('login') }}" class="btn btn-primary btn-lg px-5 py-3 rounded-pill shadow-lg fw-bold">
+                    🚀 Iniciar Sesión con Keycloak
+                </a>
+            </div>
+            <p class="mt-4 text-muted small">Acceso restringido solo para personal autorizado.</p>
+        </div>
+    {% endif %}
 </div>
 {% endblock %}

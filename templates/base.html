@@ -15,9 +15,25 @@
         </button>
         <div class="collapse navbar-collapse" id="menu">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item"><a class="nav-link" href="/catequistas">Catequistas</a></li>
-                <li class="nav-item"><a class="nav-link" href="/estudiantes">Estudiantes</a></li>
-                <li class="nav-item"><a class="nav-link" href="/grupos">Grupos</a></li>
+                {% if current_user.is_authenticated %}
+                    <li class="nav-item"><a class="nav-link" href="/catequistas">Catequistas</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/estudiantes">Estudiantes</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/grupos">Grupos</a></li>
+                {% endif %}
+            </ul>
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                {% if current_user.is_authenticated %}
+                    <li class="nav-item">
+                        <span class="nav-link">Hola, {{ current_user.name }}</span>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-outline-danger" href="{{ url_for('logout') }}">Cerrar Sesión</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="btn btn-primary" href="{{ url_for('login') }}">Iniciar Sesión</a>
+                    </li>
+                {% endif %}
             </ul>
         </div>
     </div>

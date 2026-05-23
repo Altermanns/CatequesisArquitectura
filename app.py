@@ -9,9 +9,10 @@ load_dotenv()
 
 app = Flask(__name__)
 
-# Conexión a MongoDB (local o contenedor docker)
-client = MongoClient('mongodb+srv://matias:matias@cluster0.tb41iw7.mongodb.net/')
-db = client['Catequesis']
+# Conexión a MongoDB (usando variable de entorno para flexibilidad)
+mongo_uri = os.getenv('MONGO_URI', 'mongodb://mongo:27017/Catequesis')
+client = MongoClient(mongo_uri)
+db = client.get_default_database() if 'srv' in mongo_uri else client['Catequesis']
 catequistas = db['Catequista']
 estudiantes = db['Estudiante']
 grupos = db['Grupos']
