@@ -34,7 +34,8 @@ sacramentos = db['Sacramentos']
 
 @app.route('/login')
 def login():
-    redirect_uri = url_for('callback', _external=True)
+    # Forzamos 127.0.0.1 para que coincida exactamente con la configuración de Keycloak
+    redirect_uri = url_for('callback', _external=True).replace('0.0.0.0', '127.0.0.1').replace('localhost', '127.0.0.1')
     return redirect(keycloak_manager.get_login_url(redirect_uri))
 
 @app.route('/callback')
@@ -43,7 +44,7 @@ def callback():
     if not code:
         return "Error: No code provided", 400
     
-    redirect_uri = url_for('callback', _external=True)
+    redirect_uri = url_for('callback', _external=True).replace('0.0.0.0', '127.0.0.1').replace('localhost', '127.0.0.1')
     
     try:
         # Intercambiar código por token
